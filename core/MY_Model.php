@@ -612,6 +612,14 @@ class MY_Model extends CI_Model
      */
     public function where($field_or_array = NULL, $operator_or_value = NULL, $value = NULL, $with_or = FALSE, $with_not = FALSE, $custom_string = FALSE)
     {
+        if($this->soft_deletes===TRUE)
+        {
+            $backtrace = debug_backtrace(); #fix for lower PHP 5.4 version
+            if($backtrace[1]['function']!='force_delete'){
+                $this->_where_trashed();
+            }
+        }
+
         if(is_array($field_or_array))
         {
             $multi = $this->is_multidimensional($field_or_array);
@@ -928,7 +936,7 @@ class MY_Model extends CI_Model
             {
                 $this->where($where);
             }
-            if($this->soft_deletes===TRUE)
+            elseif($this->soft_deletes===TRUE)
             {
                 $this->_where_trashed();
             }
@@ -976,7 +984,7 @@ class MY_Model extends CI_Model
             {
                 $this->where($where);
             }
-            if($this->soft_deletes===TRUE)
+            elseif($this->soft_deletes===TRUE)
             {
                 $this->_where_trashed();
             }
@@ -1027,7 +1035,7 @@ class MY_Model extends CI_Model
         {
             $this->where($where);
         }
-        if($this->soft_deletes===TRUE)
+        elseif($this->soft_deletes===TRUE)
         {
             $this->_where_trashed();
         }
